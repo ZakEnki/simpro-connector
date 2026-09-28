@@ -1,0 +1,3 @@
+import 'dotenv/config'; import { pool } from '../../../packages/database/src/db.js';
+async function run(){const r=await pool.query("select id from export_jobs where status='queued' order by created_at limit 10"); for(const job of r.rows){await pool.query("update export_jobs set status='running' where id=$1",[job.id]); console.log(`queued export ${job.id}; resource fetching will be added with token-aware Simpro client`); await pool.query("update export_jobs set status='failed',error=$2 where id=$1",[job.id,'Worker scaffold: Simpro token resolver not configured']);}}
+setInterval(()=>run().catch(console.error),5000); run().catch(console.error);

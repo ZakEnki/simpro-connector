@@ -1,0 +1,6 @@
+create extension if not exists pgcrypto;
+create table if not exists organizations (id uuid primary key default gen_random_uuid(), name text not null, created_at timestamptz not null default now());
+create table if not exists simpro_connections (id uuid primary key default gen_random_uuid(), organization_id uuid not null references organizations(id), name text not null, base_url text not null, company_id text not null, encrypted_refresh_token text, status text not null default 'pending', last_error text, created_at timestamptz not null default now(), updated_at timestamptz not null default now());
+create index if not exists simpro_connections_org_idx on simpro_connections(organization_id);
+create table if not exists audit_events (id uuid primary key default gen_random_uuid(), organization_id uuid not null, actor_id text, connection_id uuid, action text not null, resource text, resource_id text, success boolean not null, request_id text not null, metadata jsonb, created_at timestamptz not null default now());
+create table if not exists export_jobs (id uuid primary key default gen_random_uuid(), organization_id uuid not null, connection_id uuid not null, resource text not null, format text not null, status text not null default 'queued', filters jsonb, file_path text, error text, created_at timestamptz not null default now(), completed_at timestamptz);
