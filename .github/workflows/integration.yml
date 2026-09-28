@@ -1,6 +1,12 @@
 name: Simpro Australia integration
 on:
   workflow_dispatch:
+    inputs:
+      enable_writes:
+        description: 'Run the explicitly gated test-account customer write'
+        required: true
+        default: false
+        type: boolean
 jobs:
   smoke-test:
     runs-on: ubuntu-latest
@@ -16,3 +22,4 @@ jobs:
           SIMPRO_TEST_BASE_URL: ${{ secrets.SIMPRO_TEST_BASE_URL }}
           SIMPRO_TEST_COMPANY_ID: ${{ secrets.SIMPRO_TEST_COMPANY_ID }}
           SIMPRO_TEST_ACCESS_TOKEN: ${{ secrets.SIMPRO_TEST_ACCESS_TOKEN }}
+          SIMPRO_TEST_ENABLE_WRITES: ${{ inputs.enable_writes }}
